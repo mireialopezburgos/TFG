@@ -8,7 +8,7 @@ The index to navigate through the code is the following:
 1. Settings -------------------------------------------lines 18-26
 2. Read database ------------------------------------lines 27-31
 3. New variables -------------------------------------lines 33-104
-4. Description of variables --------------------------  lines 105-642
+4. Description of variables ---------------------------  lines 105-642
 5. GLM models --------------------------------------  lines 643-1086
 6. LM models  ----------------------------------------lines 1087-1305
 7. Results table 3 ------------------------------------ lines 1306-1715

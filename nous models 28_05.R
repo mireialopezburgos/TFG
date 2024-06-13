@@ -12,7 +12,7 @@
 ##
 
 ##
-# changelist: nous models amb complete cases sense financial management 
+# changelist: descriptives and bivariate and multivariate models  
 ##
 
 ## 1) Settings:########################################################
@@ -36,33 +36,6 @@ mireia_lopez_2024_05_15$S11_new <- factor(x = mireia_lopez_2024_05_15$S11, level
                                           labels = c("One","Two","More than two", "I don't know / I would rather not answer")
 ) 
 
-## s11_1 (Language specification) 
-# Harmonize:
-# All to uppercase and remove accents 
-library(stringi)
-mireia_lopez_2024_05_15$S11_1_new <- toupper(stri_trans_general(mireia_lopez_2024_05_15$S11_1,"Latin-ASCII"))
-
-# Regular Expressions and other changes
-# Blank spaces at the beggining, change to NA
-which(mireia_lopez_2024_05_15$S11_1_new=="")
-mireia_lopez_2024_05_15$S11_1_new[mireia_lopez_2024_05_15$S11_1_new==""] <- NA
-which(is.na(mireia_lopez_2024_05_15$S11_1_new))
-sum(is.na(mireia_lopez_2024_05_15$S11_1_new)) # 21 NAs
-
-## s12 (Predominant language)
-# Harmonize:
-# All to uppercase and remove accents
-library(stringi)
-mireia_lopez_2024_05_15$S12_new <- toupper(stri_trans_general(mireia_lopez_2024_05_15$S12,"Latin-ASCII"))
-table(mireia_lopez_2024_05_15$S12_new)
-
-# Regular Expressions and other changes
-# Blank spaces at the beggining, change to NA
-which(mireia_lopez_2024_05_15$S12_new=="")
-mireia_lopez_2024_05_15$S12_new[mireia_lopez_2024_05_15$S12_new==""] <- NA
-which(is.na(mireia_lopez_2024_05_15$S12_new))
-sum(is.na(mireia_lopez_2024_05_15$S12_new)) # 501 NAs
-
 ## s15 (Partner sex)
 mireia_lopez_2024_05_15$S15_new <- factor(x = mireia_lopez_2024_05_15$S15, levels = c("1","2","9"), 
                                           labels = c("Female","Male","I would rather not answer"))
@@ -84,14 +57,14 @@ mireia_lopez_2024_05_15$S10.32w_new <- factor(x = mireia_lopez_2024_05_15$S10.32
                                                          "It turns out to be quite difficult","It is very difficult",
                                                          "I would rather not answer"))
 
-# transformar categoria others s11_new en NA i treure-la
+# transform category others in s11_new to NA and remove it
 mireia_lopez_2024_05_15$S11_new[mireia_lopez_2024_05_15$S11_new %in% c("I don't know / I would rather not answer")] <- NA
 mireia_lopez_2024_05_15$S11_new <- droplevels(mireia_lopez_2024_05_15$S11_new)
 
 # merged parity
 mireia_lopez_2024_05_15$merged_parity <- ifelse(mireia_lopez_2024_05_15$parity_m >= 3, "3 or more", as.character(mireia_lopez_2024_05_15$parity_m))
 
-# imputem "home" en tots els casos en que el pare biologic sigui que si
+# imput "home" in all cases in which the biological father is "yes" 
 mireia_lopez_2024_05_15$partner_sex <- ifelse(mireia_lopez_2024_05_15$pare_bio == "yes" & is.na(mireia_lopez_2024_05_15$S15_new), "Male", mireia_lopez_2024_05_15$S15_new)
 mireia_lopez_2024_05_15$partner_sex <- ifelse(mireia_lopez_2024_05_15$partner_sex == "1", "Female", 
                                               ifelse(mireia_lopez_2024_05_15$partner_sex == "2", "Male", mireia_lopez_2024_05_15$partner_sex))
@@ -129,10 +102,11 @@ mireia_lopez_2024_05_15 <- mireia_lopez_2024_05_15 %>%
 bw_grams <- bw_ML[["b_peso"]]
 combined_df <- cbind(mireia_lopez_2024_05_15, bw_grams)
 
-## 4) Nous descriptius :######################################################### 
+## 4) Description of variables :######################################################### 
 
 library(dplyr)
 
+#creation of complete cases dataframes
 #dataset with financial management 
 data_subset <- select(combined_df, id_mother, S11_new, partner_sex, active_worker, unemployed, other_workers_s17, employee, self_employee, other_employees_s20, employees_boss, S23_new, financial_management, bmi_m_32w, edad, educ_level_m_3cat, merged_parity, ethnicity_m_3cat, covid_pandemic_m, bw_bcnatal_c_4cat, birthweight_c_3cat, bw_grams, sga_bcnatal_0y_c, gestage_0y_c_weeks, gestage_0y_c_4cat)
 complete_data_subset <- data_subset[complete.cases(data_subset), ]
@@ -153,7 +127,7 @@ ga_subset_2 <- select(combined_df, S11_new, partner_sex, active_worker, unemploy
 bw_complete_2 <- bw_subset_2[complete.cases(bw_subset_2), ]
 ga_complete_2 <- ga_subset_2[complete.cases(ga_subset_2), ]
 
-# dif hospitals (10: st pau, 11: maternitat, 12: st joan)
+# subset of data separated by different hospitals (10: st pau, 11: maternitat, 12: st joan)
 
 # Subset for IDs starting with 10 (St. Paul Hospital)
 st_pau <- complete_data_subset[grep("^10", complete_data_subset$id_mother), ]
